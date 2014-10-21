@@ -18,6 +18,8 @@
 cmake_minimum_required(VERSION 2.8)
 project(GLSLTest C)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+
 option(GENERATE_DOCS "Generate documentation" ON)
 option(DEBUG "Compile in debug mode" ON)
 
