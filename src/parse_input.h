@@ -32,7 +32,7 @@
          *  \note The first pointer will be NULL if unspecified paths
          *  \note Not the source code!
          */
-        const char **shader_paths;
+        char **shader_paths;
         /*! \brief Amount of shader sources in \ref shader_paths
          */
         unsigned shader_paths_sz;
@@ -69,7 +69,7 @@
      *  \return non-zero in case of failure.
      *  \see parsed_input
      */
-    unsigned parse_input(const char **argv, int argc, struct parsed_input *p);
+    unsigned parse_input(char **argv, int argc, struct parsed_input *p);
     
     /*! \brief Helper function which frees the memory used by pointers in \p p
      *  \param[in] p The struct you wish to free

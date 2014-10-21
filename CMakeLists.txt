@@ -48,7 +48,14 @@ endif()
 
 add_definitions(-Wall -pedantic -std=c89)
 
+find_package(OpenGL REQUIRED)
+find_package(GLUT REQUIRED)
+find_package(GLEW REQUIRED)
+
+include_directories(${GLEW_INCLUDE_DIR} ${GLUT_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
+
 file(GLOB SRC_C "${PROJECT_SOURCE_DIR}/src/*.c")
 add_executable(glsltest ${SRC_C})
+target_link_libraries(glsltest ${GLEW_LIBRARY} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
 
 install(TARGETS glsltest DESTINATION bin)

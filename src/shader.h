@@ -21,7 +21,8 @@
  */
 #ifndef GLSLTEST_SHADER_H_
 #define GLSLTEST_SHADER_H_
-    
+    #include <GL/glew.h>
+    #include <GL/glut.h>
 
     /*! \brief Compiles and links the shaders given as arguments 
      *  \param[in] srcs The list of sources. Each must be NULL-terminated.
