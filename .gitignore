@@ -1,0 +1,9 @@
+bin/
+doc/html
+doc/latex
+doc/pdf
+doc/Doxyfile
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
