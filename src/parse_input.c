@@ -76,7 +76,7 @@ unsigned parse_input(char **argv, int argc, struct parsed_input *p)
         }
         else
         {/*Probably a path*/
-            p->shader_paths=realloc(p->shader_paths, ++p->shader_paths_sz);
+            p->shader_paths=realloc(p->shader_paths, (++p->shader_paths_sz)*sizeof(char*));
             p->shader_paths[p->shader_paths_sz-1]=
                 malloc((strlen(argv[i])+1)*sizeof(char));
             memcpy(p->shader_paths[p->shader_paths_sz-1], argv[i], strlen(argv[i])+1);

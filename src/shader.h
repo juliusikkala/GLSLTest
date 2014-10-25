@@ -31,11 +31,5 @@
      *  \see get_shader_error()
      */
     GLuint load_shader(char **srcs, unsigned srcs_sz);
-    
-    /*! \brief Returns the error caused by a failed call to load_shader()
-     *  \return The error message. NULL if there was no error.
-     *  \warning Remember to free() the returned char*!
-     */
-    char *get_shader_error();
 
 #endif
