@@ -21,16 +21,16 @@
  */
 #ifndef GLSLTEST_SHADER_H_
 #define GLSLTEST_SHADER_H_
-    #include <GL/glew.h>
-    #include <GL/glut.h>
+    #include "GL/glew.h"
+    #include "GL/gl.h"
 
     /*! \brief Compiles and links the shaders given as arguments 
      *  \param[in] srcs The list of sources. Each must be NULL-terminated.
-     *  \param[in] srcs_sz The amount of sources in \ref srcs.
+     *  \param[in] srcs_sz The amount of sources in \p srcs.
      *  \return The compiled and linked shader. 0 if invalid, call get_shader_error()
      *  \see get_shader_error()
      */
-    GLuint load_shader(const char **srcs, unsigned srcs_sz);
+    GLuint load_shader(char **srcs, unsigned srcs_sz);
     
     /*! \brief Returns the error caused by a failed call to load_shader()
      *  \return The error message. NULL if there was no error.

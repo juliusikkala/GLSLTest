@@ -19,6 +19,7 @@ cmake_minimum_required(VERSION 2.8)
 project(GLSLTest C)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
 
 option(GENERATE_DOCS "Generate documentation" ON)
 option(DEBUG "Compile in debug mode" ON)
@@ -38,7 +39,7 @@ if(GENERATE_DOCS)
             @ONLY
         )
         add_custom_target(
-            documentation
+            documentation ALL
             COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/doc/Doxyfile
             WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
             COMMENT "Generating documentation..." VERBATIM
@@ -51,13 +52,13 @@ endif()
 add_definitions(-Wall -pedantic -std=c89)
 
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
+find_package(SDL2 REQUIRED)
 find_package(GLEW REQUIRED)
 
-include_directories(${GLEW_INCLUDE_DIR} ${GLUT_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
+include_directories(${GLEW_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} ${OPENGL_INCLUDE_DIR})
 
 file(GLOB SRC_C "${PROJECT_SOURCE_DIR}/src/*.c")
 add_executable(glsltest ${SRC_C})
-target_link_libraries(glsltest ${GLEW_LIBRARY} ${GLUT_LIBRARIES} ${OPENGL_LIBRARIES})
+target_link_libraries(glsltest ${GLEW_LIBRARY} ${SDL2_LIBRARY} ${OPENGL_LIBRARIES})
 
 install(TARGETS glsltest DESTINATION bin)

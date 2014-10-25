@@ -29,7 +29,6 @@
     struct parsed_input
     {
         /*! \brief List of paths to GLSL shader sources
-         *  \note The first pointer will be NULL if unspecified paths
          *  \note Not the source code!
          */
         char **shader_paths;
@@ -37,35 +36,33 @@
          */
         unsigned shader_paths_sz;
         /*! \brief The width of the window
-         *  \note <0 if unspecified.
          */
         int win_w;
         /*! \brief The height of the window
-         *  \note <0 if unspecified.
          */
         int win_h;
         /*! \brief The switch for selecting whether a window should cover the display
-         *  \note >1 if on, 0 if off, <0 if unspecified
+         *  \note Set to 1 for on, 0 for off
          */
         int fullscreen;
+        /*! \brief Vertical synchronization switch
+         *  \note Set to 1 for on, 0 for off
+         */
+        int vsync;
         /*! \brief The OpenGL major version number
-         *  \note <0 if unspecified
          */
         int version_major;
         /*! \brief The OpenGL minor version number
-         *  \note <0 if unspecified
          */
         int version_minor;
-        /*! \brief Vertical synchronization switch
-         *  \note >0 if on, 0 if off, <0 if unspecified
-         */
-        int vsync;
     };
 
     /*! \brief Parses command-line arguments into a readable format
      *  \param[in] argv The list of arguments given to main().
      *  \param[in] argc The amount of members \p argv contains
-     *  \param[out] p The parsed arguments
+     *  \param[out] p The parsed arguments \note Sets only the parameters given
+     *  in arguments, others will not be touched, except for parsed_input#shader_paths and 
+     *  parsed_input#shader_paths_sz
      *  \return non-zero in case of failure.
      *  \see parsed_input
      */
