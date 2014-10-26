@@ -103,7 +103,7 @@ unsigned init(int argc, char **argv, struct sdl_res *sdl, struct gl_res *gl)
     glViewport(0,0,p.win_w,p.win_h);
 
     glUniform1i(gl->uniform_mouse_pressed, 0);
-    glUniform2i(gl->uniform_res, p.win_w, p.win_h);
+    glUniform2f(gl->uniform_res, p.win_w, p.win_h);
     return 0;
 }
 
