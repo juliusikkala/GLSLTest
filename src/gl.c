@@ -201,6 +201,12 @@ unsigned init_gl(
         glDeleteVertexArrays(1, &res->quad_vao);
         return 1;
     }
+    
+    /*Get the uniforms*/
+    res->uniform_time=glGetUniformLocation(res->shader_program, "time");
+    res->uniform_mouse=glGetUniformLocation(res->shader_program, "mouse");
+    res->uniform_mouse_pressed=glGetUniformLocation(res->shader_program, "mouse_pressed");
+    res->uniform_res=glGetUniformLocation(res->shader_program, "res");
     return 0;
 }
 
@@ -209,4 +215,12 @@ void deinit_gl(struct gl_res res)
     glDeleteBuffers(1, &res.quad_vbo);
     glDeleteVertexArrays(1, &res.quad_vao);
     glDeleteProgram(res.shader_program);
+}
+
+void render(struct gl_res *res)
+{
+    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+    glBindVertexArray(res->quad_vao);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
 }

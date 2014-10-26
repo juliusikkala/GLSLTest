@@ -99,30 +99,35 @@ unsigned init(int argc, char **argv, struct sdl_res *sdl, struct gl_res *gl)
         return 1;
     }
     
-    
     glUseProgram(gl->shader_program);
     glViewport(0,0,p.win_w,p.win_h);
+
+    glUniform1i(gl->uniform_mouse_pressed, 0);
+    glUniform2i(gl->uniform_res, p.win_w, p.win_h);
     return 0;
 }
+
 void deinit(struct sdl_res sdl, struct gl_res gl)
 {
     deinit_gl(gl);
     deinit_sdl(sdl);
 }
+GLint uniform_mouse;
 int main(int argc, char **argv)
 {
     struct sdl_res sdl;
     struct gl_res gl;
     SDL_Event e;
     unsigned quit=0;
+    unsigned begin_ticks;
     
     if(init(argc, argv, &sdl, &gl))
     {
         return 1;
     }
+    begin_ticks=SDL_GetTicks();
 
-    /*Start rendering*/
-    glClearColor(0.5,0.5,1.0,0.0);
+    /*Start the main loop*/
     while(!quit)
     {
         while(SDL_PollEvent(&e))
@@ -135,7 +140,8 @@ int main(int argc, char **argv)
             case SDL_WINDOWEVENT:
                 if(e.window.event==SDL_WINDOWEVENT_SIZE_CHANGED)
                 {
-                   glViewport(0,0,e.window.data1,e.window.data2); 
+                    glViewport(0,0,e.window.data1,e.window.data2); 
+                    glUniform2f(gl.uniform_res, e.window.data1, e.window.data2);
                 }
                 break;
             case SDL_KEYDOWN:
@@ -144,12 +150,19 @@ int main(int argc, char **argv)
                     quit=1;
                 }
                 break;
+            case SDL_MOUSEBUTTONDOWN:
+                glUniform1i(gl.uniform_mouse_pressed, 1);
+                break;
+            case SDL_MOUSEBUTTONUP:
+                glUniform1i(gl.uniform_mouse_pressed, 0);
+                break;
+            case SDL_MOUSEMOTION:
+                glUniform2f(gl.uniform_mouse, e.motion.x, e.motion.y);
+                break;
             }
         }
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-        glBindVertexArray(gl.quad_vao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-        glBindVertexArray(0);
+        glUniform1f(gl.uniform_time, (SDL_GetTicks()-begin_ticks)/1000.0f);
+        render(&gl);
         SDL_GL_SwapWindow(sdl.win);
     }
     deinit(sdl, gl);

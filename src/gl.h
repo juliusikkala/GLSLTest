@@ -28,11 +28,31 @@
      */
     struct gl_res
     {
+        /*! \brief The shader this program runs
+         */
         GLuint shader_program;
+        /*! \brief The VAO of the quad that is used to fill the screen
+         */
         GLuint quad_vbo;
+        /*! \brief The VBO of the quad that is used to fill the screen
+         */
         GLuint quad_vao;
+        /*! \brief The uniform location of \p time in the shader. A float in seconds.
+         */
+        GLint uniform_time;
+        /*! \brief The uniform location of \p mouse in the shader. A vec2 containing
+         *  the screen coordinates of the mouse.
+         */
+        GLint uniform_mouse;
+        /*! \brief The uniform location of \p mouse_pressed in the shader. An int
+         *  which is 1 when the mouse is pressed and 0 when it is not.
+         */
+        GLint uniform_mouse_pressed;
+        /*! \brief The uniform location of \p res in the shader. An vec2 containing
+         *  the screen resolution.
+         */
+        GLint uniform_res;
     };
-
 
     /*! \brief Initializes GLEW.
      *  \return non-zero on failure.
@@ -61,7 +81,7 @@
      *  \return The compiled and linked shader program. 0 on error.
      */
     GLuint compile_shader_program(const char * const *srcs, unsigned srcs_sz);
-
+    
     /*! \brief Creates an OpenGL Vertex Buffer Object
      *  \param[in] data The data the VBO should contain
      *  \param[in] data_bytes Amount of bytes of data \p data contains
@@ -102,4 +122,9 @@
      *  \param[in] res The OpenGL resources
      */
     void deinit_gl(struct gl_res res);
+    
+    /*! \brief Does the rendering of the shader
+     *  \param[in] res The OpenGL resources
+     */
+    void render(struct gl_res *res);
 #endif
