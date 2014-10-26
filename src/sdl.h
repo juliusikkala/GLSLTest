@@ -52,7 +52,7 @@
         struct sdl_res *res
     );
     /*! \brief Deinitializes SDL.
-     *  \note Only use if init_sdl was succesful!
+     *  \note Only use if init_sdl was successful!
      */
     void deinit_sdl(struct sdl_res res);
 #endif

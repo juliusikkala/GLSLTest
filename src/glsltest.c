@@ -25,15 +25,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static const GLfloat quad_buffer[6*3]={
-     1.0f, 1.0f, 0,
-     1.0f,-1.0f, 0,
-    -1.0f, 1.0f, 0,
-    -1.0f, 1.0f, 0,
-     1.0f,-1.0f, 0,
-    -1.0f,-1.0f, 0
-};
-
 void print_usage(const char *name)
 {
     printf("Usage: %s SOURCES [OPTIONS]\n"
@@ -45,16 +36,10 @@ void print_usage(const char *name)
            "             --glversion<MAJOR>.<MINOR>\n", name);
 }
 
-int main(int argc, char **argv)
+unsigned init(int argc, char **argv, struct sdl_res *sdl, struct gl_res *gl)
 {
-    struct sdl_res res;
-    SDL_Event e;
-    unsigned quit=0;
-    char **srcs=NULL;
-    GLuint shader=0;
-    GLenum err;
-    GLuint buffer;
-    GLuint vao;
+    char **srcs;
+    unsigned err=0;
     struct parsed_input p;
     p.win_w=640;
     p.win_h=480;
@@ -63,11 +48,13 @@ int main(int argc, char **argv)
     p.version_major=3;
     p.version_minor=3;
     
+    /*Parse input*/
     if(parse_input(argv, argc, &p))
     {
         print_usage(argv[0]);
         return 1;
     }
+    /*Check if there are no shaders specified*/
     if(p.shader_paths==NULL)
     {
         fprintf(stderr, "Fatal error: no input files\n");
@@ -89,53 +76,52 @@ int main(int argc, char **argv)
         p.vsync,
         p.version_major,
         p.version_minor,
-        &res)
-    ){
+        sdl
+    )){
+        free_2d((void**)srcs, p.shader_paths_sz);
         return 1;
     }
     
-    /*Init GLEW*/
-    glewExperimental=1;
-    err=glewInit();
-    if (err!=GLEW_OK)
-    {
-        fprintf(stderr, "%s\n", glewGetErrorString(err));
-        return 1;
-    }
     /*Print the state of the window*/
-    SDL_GetWindowSize(res.win, &p.win_w, &p.win_h);
+    SDL_GetWindowSize(sdl->win, &p.win_w, &p.win_h);
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &p.version_major);
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &p.version_minor);
     printf(
         "OpenGL: %d.%d\nViewport: %dx%d\n",
         p.version_major, p.version_minor, p.win_w, p.win_h
     );
-    /*Generate VAO*/
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(0);
     
-    /*Load buffers*/
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quad_buffer), quad_buffer, GL_STATIC_DRAW);
-    
-    /*Fill VAO*/
-    glBindVertexArray(vao);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    glBindVertexArray(0);
-    
-    /*Load shaders*/
-    shader=compile_shader_program(srcs, p.shader_paths_sz);
+    /*Init OpenGL*/
+    err=init_gl((const char * const *)srcs, p.shader_paths_sz, gl);
     free_2d((void**)srcs, p.shader_paths_sz);
-    if(shader==0)
-    {
-        goto end;
+    if(err){
+        deinit_sdl(*sdl);
+        return 1;
     }
-    glUseProgram(shader);
-    /*Start rendering*/
+    
+    
+    glUseProgram(gl->shader_program);
     glViewport(0,0,p.win_w,p.win_h);
+    return 0;
+}
+void deinit(struct sdl_res sdl, struct gl_res gl)
+{
+    deinit_gl(gl);
+    deinit_sdl(sdl);
+}
+int main(int argc, char **argv)
+{
+    struct sdl_res sdl;
+    struct gl_res gl;
+    SDL_Event e;
+    unsigned quit=0;
+    
+    if(init(argc, argv, &sdl, &gl))
+    {
+        return 1;
+    }
+
+    /*Start rendering*/
     glClearColor(0.5,0.5,1.0,0.0);
     while(!quit)
     {
@@ -161,17 +147,11 @@ int main(int argc, char **argv)
             }
         }
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-        glBindVertexArray(vao);
+        glBindVertexArray(gl.quad_vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
-        SDL_GL_SwapWindow(res.win);
+        SDL_GL_SwapWindow(sdl.win);
     }
-end:
-    /*Clean up*/
-        
-    glDeleteProgram(shader);
-    glDeleteBuffers(1, &buffer);
-    glDeleteVertexArrays(1, &vao);
-    deinit_sdl(res);
+    deinit(sdl, gl);
     return 0;
 }

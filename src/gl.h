@@ -24,15 +24,82 @@
     #include "GL/glew.h"
     #include "GL/gl.h"
 
+    /*! \brief Contains the OpenGL resources used by GLSLTest
+     */
+    struct gl_res
+    {
+        GLuint shader_program;
+        GLuint quad_vbo;
+        GLuint quad_vao;
+    };
+
+
+    /*! \brief Initializes GLEW.
+     *  \return non-zero on failure.
+     *  \note Prints the errors in case of failure
+     */
+    unsigned init_glew();
+
+    /*! \brief Compiles a shader
+     *  \param[in] shader_type The type of the OpenGL shader
+     *  \param[in] srcs The list of sources for the shader. Each must be NULL-terminated.
+     *  \param[in] srcs_sz The amount of sources in \p srcs.
+     *  \return The compiled shader. 0 on error.
+     */
+    GLuint compile_shader(GLenum shader_type, const char * const *srcs, unsigned srcs_sz);
+
+    /*! \brief Links a shader program
+     *  \param[in] shaders The list of shaders for the program
+     *  \param[in] shaders_sz The amount of shaders in \p shaders.
+     *  \return The linked shader program. 0 on error.
+     */
+    GLuint link_shader_program(GLuint *shaders, unsigned shaders_sz);
+
     /*! \brief Compiles and links the shaders given as arguments 
      *  \param[in] srcs The list of sources. Each must be NULL-terminated.
      *  \param[in] srcs_sz The amount of sources in \p srcs.
      *  \return The compiled and linked shader program. 0 on error.
      */
-    GLuint compile_shader_program(char **srcs, unsigned srcs_sz);
+    GLuint compile_shader_program(const char * const *srcs, unsigned srcs_sz);
 
-    /*! 
-     *  
+    /*! \brief Creates an OpenGL Vertex Buffer Object
+     *  \param[in] data The data the VBO should contain
+     *  \param[in] data_bytes Amount of bytes of data \p data contains
+     *  \param[in] usage How the VBO is going to be used.
+     *  \return The created VBO
      */
+    GLuint create_vbo(const void *data, size_t data_bytes, GLenum usage);
 
+    /*! \brief Creates an OpenGL Vertex Array Object
+     *  \param[in] attrib_indices Indices of the attributes
+     *  \param[in] vbos The VBOs bound to the indices
+     *  \param[in] sizes The sizes of the VBO elements. 1, 2, 3 or 4
+     *  \param[in] types The types of the VBO elements.
+     *  \param[in] amount The amount of elements all of the following arrays contain
+     *  \return The created VAO
+     */
+    GLuint create_vao(
+        GLuint *attrib_indices,
+        GLuint *vbos,
+        GLint *sizes,
+        GLenum *types,
+        unsigned amount
+    );
+    
+    /*! \brief Initializes all the OpenGL resources used by GLSLTest
+     *  \param[in] shader_srcs The source codes of the fragment shader
+     *  \param[in] shader_srcs_sz The amount of shader source codes
+     *  \param[out] res The OpenGL resources
+     *  \return non-zero on failure
+     */
+    unsigned init_gl(
+        const char * const *shader_srcs,
+        unsigned shader_srcs_sz,
+        struct gl_res *res
+    );
+    
+    /*! \brief Deinitializes all the OpenGL resources used by GLSLTest
+     *  \param[in] res The OpenGL resources
+     */
+    void deinit_gl(struct gl_res res);
 #endif
