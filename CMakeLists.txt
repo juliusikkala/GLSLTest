@@ -49,7 +49,7 @@ if(GENERATE_DOCS)
     endif()
 endif()
 
-add_definitions(-Wall -pedantic -std=c89)
+add_definitions(-Wall -pedantic -std=c99)
 
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)

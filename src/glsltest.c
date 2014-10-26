@@ -19,8 +19,8 @@
 /** \file glsltest.c
  *  \brief Contains the logic of the program
  */
-#include "shader.h"
-#include "parse_input.h"
+#include "gl.h"
+#include "io.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,47 +44,7 @@ void print_usage(const char *name)
            "             -v, --vsync\n"
            "             --glversion<MAJOR>.<MINOR>\n", name);
 }
-char **read_sources(char **path, unsigned sz)
-{
-    int i=0;
-    char **srcs=malloc(sizeof(char*)*sz);
-    FILE *srcfile=NULL;
-    long int file_size=0;
-    if(path==NULL)
-    {
-        fprintf(stderr, "No shader specified\n");
-        return NULL;
-    }
-    for(;i<sz;++i)
-    {
-        srcfile=fopen(path[i], "rb");
-        if(srcfile==NULL)
-        {
-            fprintf(stderr, "Cannot read %s: No such file or directory\n", path[i]);
-            goto failed;
-        }
-        fseek(srcfile, 0, SEEK_END);
-        file_size=ftell(srcfile);
-        fseek(srcfile, 0, SEEK_SET);
-        srcs[i]=malloc((file_size+1)*sizeof(char));
-        srcs[i][file_size]=0;/*Null terminator*/
-        fread((void *)srcs[i], 1, file_size, srcfile);
-        fclose(srcfile);
-    }
-    return srcs;
-failed:
-    free(srcs);
-    return NULL;
-}
-void free_sources(char **srcs, unsigned sz)
-{
-    int i=0;
-    for(;i<sz;++i)
-    {
-        free(srcs[i]);
-    }
-    free(srcs);
-}
+
 int main(int argc, char **argv)
 {
     SDL_Window *win=NULL;
@@ -111,7 +71,7 @@ int main(int argc, char **argv)
     }
 
     /*Read shader sources now so we can free the parsed_input early*/
-    if(!(srcs=read_sources(p.shader_paths, p.shader_paths_sz)))
+    if(!(srcs=read_text_files(p.shader_paths, p.shader_paths_sz)))
     {
         return 0;
     }
@@ -178,7 +138,7 @@ int main(int argc, char **argv)
     
     /*Load shaders*/
     shader=load_shader(srcs, p.shader_paths_sz);
-    free_sources(srcs, p.shader_paths_sz);
+    free_2d((void**)srcs, p.shader_paths_sz);
     if(shader==0)
     {
         goto end;

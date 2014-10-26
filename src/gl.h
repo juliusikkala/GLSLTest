@@ -16,11 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with GLSLTest.  If not, see <http://www.gnu.org/licenses/>.
 */
-/*! \file shader.h
- *  \brief Contains everything related to loading the shader given to GLSLTest
+/*! \file gl.h
+ *  \brief Contains everything related to OpenGL.
  */
-#ifndef GLSLTEST_SHADER_H_
-#define GLSLTEST_SHADER_H_
+#ifndef GLSLTEST_GL_H_
+#define GLSLTEST_GL_H_
     #include "GL/glew.h"
     #include "GL/gl.h"
 

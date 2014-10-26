@@ -16,11 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with GLSLTest.  If not, see <http://www.gnu.org/licenses/>.
 */
-/*! \file parse_input.h
- *  \brief Contains everything related to parsing the input given to GLSLTest
+/*! \file io.h
+ *  \brief Contains everything related to input and output to GLSLTest
  */
-#ifndef GLSLTEST_PARSE_INPUT_H_
-#define GLSLTEST_PARSE_INPUT_H_
+#ifndef GLSLTEST_IO_H_
+#define GLSLTEST_IO_H_
 
     /*! \brief Contains all variables parsed from input
      *  \see parse_input()
@@ -73,4 +73,20 @@
      *  \see parsed_input
      */
     void free_parsed_input(struct parsed_input p);
+    
+    /*! \brief Reads files referenced by \p paths
+     *  \param[in] paths Array of filesystem paths which point to the files to be read
+     *  \param[in] paths_sz Amount of paths in \p paths
+     *  \return Array of NULL-terminated string containing the files' contents.
+     *          NULL if \p paths == NULL, \p paths_sz == 0 or any one of \p paths is
+     *          invalid.
+     *  \note Writes error output to stderr for every invalid path
+     */
+    char **read_text_files(const char * const *paths, unsigned paths_sz);
+    
+    /*! \brief Frees the two-dimensional argument \p p
+     *  \param[in] p Two-dimensional array
+     *  \param[in] p_sz amount of members in \p p
+     */
+    void free_2d(void **p, unsigned p_sz);
 #endif

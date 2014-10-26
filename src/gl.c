@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with GLSLTest.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "shader.h"
+#include "gl.h"
 #include <stdio.h>
 #include <stdlib.h>
 
