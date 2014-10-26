@@ -27,9 +27,12 @@
     /*! \brief Compiles and links the shaders given as arguments 
      *  \param[in] srcs The list of sources. Each must be NULL-terminated.
      *  \param[in] srcs_sz The amount of sources in \p srcs.
-     *  \return The compiled and linked shader. 0 if invalid, call get_shader_error()
-     *  \see get_shader_error()
+     *  \return The compiled and linked shader program. 0 on error.
      */
-    GLuint load_shader(char **srcs, unsigned srcs_sz);
+    GLuint compile_shader_program(char **srcs, unsigned srcs_sz);
+
+    /*! 
+     *  
+     */
 
 #endif

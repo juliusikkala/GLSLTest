@@ -39,7 +39,7 @@ if(GENERATE_DOCS)
             @ONLY
         )
         add_custom_target(
-            documentation ALL
+            documentation #ALL
             COMMAND ${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/doc/Doxyfile
             WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
             COMMENT "Generating documentation..." VERBATIM

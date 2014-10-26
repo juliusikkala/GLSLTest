@@ -30,7 +30,7 @@ static const char * const vshader_src=
 "    uv=vertex;\n"
 "}\n"; 
 
-GLuint load_shader(char **srcs, unsigned srcs_sz)
+GLuint compile_shader_program(char **srcs, unsigned srcs_sz)
 {
     #define check_shader(var) \
         do{\

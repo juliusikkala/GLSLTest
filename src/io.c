@@ -25,8 +25,9 @@ unsigned parse_input(char **argv, int argc, struct parsed_input *p)
 {
     char *endptr=NULL;
     int temp1=0, temp2=0;
-    p->shader_paths=NULL;
+    p->shader_paths=NULL;/*Set these to empty by default*/
     p->shader_paths_sz=0;
+
     for(int i=1;i<argc;++i)
     {
         if(!strcmp(argv[i], "-f") || !strcmp(argv[i], "--fullscreen"))

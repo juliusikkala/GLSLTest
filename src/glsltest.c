@@ -21,7 +21,7 @@
  */
 #include "gl.h"
 #include "io.h"
-#include <SDL2/SDL.h>
+#include "sdl.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -47,8 +47,7 @@ void print_usage(const char *name)
 
 int main(int argc, char **argv)
 {
-    SDL_Window *win=NULL;
-    SDL_GLContext ctx;
+    struct sdl_res res;
     SDL_Event e;
     unsigned quit=0;
     char **srcs=NULL;
@@ -69,40 +68,31 @@ int main(int argc, char **argv)
         print_usage(argv[0]);
         return 1;
     }
-
-    /*Read shader sources now so we can free the parsed_input early*/
-    if(!(srcs=read_text_files(p.shader_paths, p.shader_paths_sz)))
+    if(p.shader_paths==NULL)
     {
-        return 0;
+        fprintf(stderr, "Fatal error: no input files\n");
+        return 1;
     }
-    free_parsed_input(p);
-
-    /*Init SDL*/
-    if(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_EVENTS))
+    /*Read shader sources now so we can free the parsed_input early*/
+    if(!(srcs=read_text_files((const char * const*)p.shader_paths, p.shader_paths_sz)))
     {
-        fprintf(stderr, "%s\n", SDL_GetError());
         return 1;
     }
     
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, p.version_major);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, p.version_minor);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetSwapInterval(p.vsync);
-    
-    win=SDL_CreateWindow(
-        "GLSLTest", 
-        SDL_WINDOWPOS_UNDEFINED, 
-        SDL_WINDOWPOS_UNDEFINED, 
-        p.win_w, p.win_h,
-        SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE|
-        (p.fullscreen?SDL_WINDOW_FULLSCREEN_DESKTOP:0)
-    );
-    ctx=SDL_GL_CreateContext(win);
-    SDL_GL_MakeCurrent(win, ctx);
+    free_parsed_input(p);
+
+    /*Init SDL*/
+    if(init_sdl(
+        p.win_w,
+        p.win_h,
+        p.fullscreen,
+        p.vsync,
+        p.version_major,
+        p.version_minor,
+        &res)
+    ){
+        return 1;
+    }
     
     /*Init GLEW*/
     glewExperimental=1;
@@ -113,7 +103,7 @@ int main(int argc, char **argv)
         return 1;
     }
     /*Print the state of the window*/
-    SDL_GetWindowSize(win, &p.win_w, &p.win_h);
+    SDL_GetWindowSize(res.win, &p.win_w, &p.win_h);
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &p.version_major);
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &p.version_minor);
     printf(
@@ -137,7 +127,7 @@ int main(int argc, char **argv)
     glBindVertexArray(0);
     
     /*Load shaders*/
-    shader=load_shader(srcs, p.shader_paths_sz);
+    shader=compile_shader_program(srcs, p.shader_paths_sz);
     free_2d((void**)srcs, p.shader_paths_sz);
     if(shader==0)
     {
@@ -174,7 +164,7 @@ int main(int argc, char **argv)
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindVertexArray(0);
-        SDL_GL_SwapWindow(win);
+        SDL_GL_SwapWindow(res.win);
     }
 end:
     /*Clean up*/
@@ -182,8 +172,6 @@ end:
     glDeleteProgram(shader);
     glDeleteBuffers(1, &buffer);
     glDeleteVertexArrays(1, &vao);
-    SDL_GL_DeleteContext(ctx);
-    SDL_DestroyWindow(win);
-    SDL_Quit();
+    deinit_sdl(res);
     return 0;
 }
