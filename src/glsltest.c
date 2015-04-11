@@ -24,6 +24,8 @@
 #include "sdl.h"
 #include <stdio.h>
 #include <stdlib.h>
+/*The amount of seconds to measure the FPS for before printing*/
+#define FPS_MEASURE_PERIOD 5
 
 void print_usage(const char *name)
 {
@@ -112,7 +114,6 @@ void deinit(struct sdl_res sdl, struct gl_res gl)
     deinit_gl(gl);
     deinit_sdl(sdl);
 }
-GLint uniform_mouse;
 int main(int argc, char **argv)
 {
     struct sdl_res sdl;
@@ -120,12 +121,14 @@ int main(int argc, char **argv)
     SDL_Event e;
     unsigned quit=0;
     unsigned begin_ticks;
+    unsigned frames=0;
+    unsigned measure_ticks;
     
     if(init(argc, argv, &sdl, &gl))
     {
         return 1;
     }
-    begin_ticks=SDL_GetTicks();
+    begin_ticks=measure_ticks=SDL_GetTicks();
 
     /*Start the main loop*/
     while(!quit)
@@ -160,6 +163,17 @@ int main(int argc, char **argv)
                 glUniform2f(gl.uniform_mouse, e.motion.x, e.motion.y);
                 break;
             }
+        }
+        frames++;
+        if(SDL_GetTicks()-measure_ticks>FPS_MEASURE_PERIOD*1000)
+        {
+            printf("%d frames in %.1f seconds =  %.3f FPS\n",
+                frames,
+                (float) FPS_MEASURE_PERIOD,
+                frames/(float) FPS_MEASURE_PERIOD
+            );
+            frames=0;
+            measure_ticks=SDL_GetTicks();
         }
         glUniform1f(gl.uniform_time, (SDL_GetTicks()-begin_ticks)/1000.0f);
         render(&gl);

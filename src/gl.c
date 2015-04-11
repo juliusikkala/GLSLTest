@@ -189,6 +189,8 @@ unsigned init_gl(
     GLuint index=0;
     GLint size=3;
     GLenum type=GL_FLOAT;
+    char *tex_data=NULL;
+    unsigned i=0;
     if(init_glew())
         return 1;
     
@@ -207,11 +209,32 @@ unsigned init_gl(
     res->uniform_mouse=glGetUniformLocation(res->shader_program, "mouse");
     res->uniform_mouse_pressed=glGetUniformLocation(res->shader_program, "mouse_pressed");
     res->uniform_res=glGetUniformLocation(res->shader_program, "res");
+    res->uniform_random_tex=glGetUniformLocation(
+        res->shader_program,
+        "random_tex"
+    );
+    /*Generate the random texture*/
+    glGenTextures(1, &res->random_tex);
+    glUniform1i(res->uniform_random_tex, 0);
+    glActiveTexture(GL_TEXTURE0+0);
+    glBindTexture(GL_TEXTURE_2D, res->random_tex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    tex_data=malloc(64*64*3);
+    for(i=0;i<64*64*3;++i)
+    {
+        tex_data[i]=rand()%256;
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_data);
+    free(tex_data);
     return 0;
 }
 
 void deinit_gl(struct gl_res res)
 {
+    glDeleteTextures(1, &res.random_tex);
     glDeleteBuffers(1, &res.quad_vbo);
     glDeleteVertexArrays(1, &res.quad_vao);
     glDeleteProgram(res.shader_program);

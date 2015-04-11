@@ -52,6 +52,12 @@
          *  the screen resolution.
          */
         GLint uniform_res;
+        /*! \brief The random texture uniform. A sampler2D containing an RGB
+         *  random texture.
+         */
+        GLint uniform_random_tex;
+        /*! \brief The random texture itself.*/
+        GLuint random_tex;
     };
 
     /*! \brief Initializes GLEW.
