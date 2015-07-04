@@ -41,7 +41,7 @@ GLuint compile_shader(GLenum shader_type, const char * const *srcs, unsigned src
     GLint log_length=0;
     GLuint shader=glCreateShader(shader_type);
     
-    glShaderSource(shader, srcs_sz, (const GLchar * const *)srcs, NULL);
+    glShaderSource(shader, srcs_sz, (const GLchar **)srcs, NULL);
     
     glCompileShader(shader);
     

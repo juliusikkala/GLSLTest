@@ -17,6 +17,7 @@
     along with GLSLTest.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "io.h"
+#include <HILL/HILL.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -27,6 +28,8 @@ unsigned parse_input(char **argv, int argc, struct parsed_input *p)
     int temp1=0, temp2=0;
     p->shader_paths=NULL;/*Set these to empty by default*/
     p->shader_paths_sz=0;
+    p->texture_paths=NULL;
+    p->texture_paths_sz=0;
 
     for(int i=1;i<argc;++i)
     {
@@ -70,6 +73,13 @@ unsigned parse_input(char **argv, int argc, struct parsed_input *p)
             }
             p->version_major=temp1;
             p->version_minor=temp2;
+        }
+        else if(!strncmp(argv[i], "-t", 2) && strlen(argv[i])>2)
+        {/*Texture*/
+            p->texture_paths=realloc(p->texture_paths, (++p->texture_paths_sz)*sizeof(char*));
+            p->texture_paths[p->texture_paths_sz-1]=
+                malloc((strlen(argv[i]+2)+1)*sizeof(char));
+            memcpy(p->texture_paths[p->texture_paths_sz-1], argv[i]+2, strlen(argv[i]+2)+1);
         }
         else if(argv[i][0]=='-')
         {/*Not a real switch*/

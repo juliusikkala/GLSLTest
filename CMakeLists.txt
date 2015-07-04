@@ -21,7 +21,10 @@ project(GLSLTest C)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/" ${CMAKE_MODULE_PATH})
 
-option(GENERATE_DOCS "Generate documentation" ON)
+#Fix problems with libraries installed in /usr/lib/x86_64-linux-gnu on Ubuntu
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} /usr/lib/x86_64-linux-gnu)
+
+option(GENERATE_DOCS "Generate documentation" OFF)
 option(DEBUG "Compile in debug mode" ON)
 
 if(DEBUG)

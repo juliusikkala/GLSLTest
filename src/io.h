@@ -21,7 +21,7 @@
  */
 #ifndef GLSLTEST_IO_H_
 #define GLSLTEST_IO_H_
-
+    #include <stddef.h>
     /*! \brief Contains all variables parsed from input
      *  \see parse_input()
      *  \see free_parsed_input();
@@ -55,6 +55,12 @@
         /*! \brief The OpenGL minor version number
          */
         int version_minor;
+        /*! \brief Paths to the textures to use
+         */
+        char **texture_paths;
+        /*! \brief Amount of texture paths in \p texture_paths
+         */
+        size_t texture_paths_sz;
     };
 
     /*! \brief Parses command-line arguments into a readable format
@@ -83,6 +89,25 @@
      *  \note Writes error output to stderr for every invalid path
      */
     char **read_text_files(const char * const *paths, unsigned paths_sz);
+
+    /*! \brief An image struct.*/
+    struct image {
+        /*! \brief Width of the image */
+        int w;
+        /*! \brief Height of the image */
+        int h;
+        /*! \brief Image data, in RGB8 */
+        char *data;
+    };
+    /*! \brief Reads images referenced by \p paths
+     *  \param[in] paths Array of filesystem paths which point to the images to be read
+     *  \param[in] paths_sz Amount of paths in \p paths
+     *  \return Array of NULL-terminated string containing the images' contents.
+     *          NULL if \p paths == NULL, \p paths_sz == 0 or any one of \p paths is
+     *          invalid.
+     *  \note Writes error output to stderr for every invalid path
+     */
+    struct image *read_image_files(const char * const *paths, unsigned paths_sz);
     
     /*! \brief Frees the two-dimensional argument \p p
      *  \param[in] p Two-dimensional array
