@@ -47,7 +47,7 @@ unsigned init(int argc, char **argv, struct sdl_res *sdl, struct gl_res *gl)
     p.win_h=480;
     p.fullscreen=0;
     p.vsync=0;
-    p.version_major=3;
+    p.version_major=4;
     p.version_minor=3;
     
     /*Parse input*/

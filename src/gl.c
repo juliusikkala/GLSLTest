@@ -88,7 +88,7 @@ GLuint link_shader_program(GLuint *shaders, unsigned shaders_sz)
 }
 
 static const char * const vshader_src=
-"#version 330 core\n"
+"#version 430 core\n"
 "layout(location=0) in vec2 vertex;\n"
 "out vec2 uv;\n"
 "void main(void)\n"
