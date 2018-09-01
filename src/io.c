@@ -17,7 +17,6 @@
     along with GLSLTest.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "io.h"
-#include <HILL/HILL.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -110,6 +109,7 @@ char **read_text_files(const char * const * paths, unsigned paths_sz)
 
     if(paths==NULL||paths_sz==0)
     {/*No paths specified; return NULL.*/
+        free(file_datas);
         return NULL;
     }
     for(int i=0;i<paths_sz;++i)
