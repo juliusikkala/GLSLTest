@@ -40,7 +40,6 @@ unsigned init_sdl(
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, gl_major);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, gl_minor);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetSwapInterval(vsync);
     
     res->win=SDL_CreateWindow(
         "GLSLTest", 
@@ -52,6 +51,7 @@ unsigned init_sdl(
     );
     res->ctx=SDL_GL_CreateContext(res->win);
     SDL_GL_MakeCurrent(res->win, res->ctx);
+    SDL_GL_SetSwapInterval(vsync);
     return 0;
 }
 void deinit_sdl(struct sdl_res res)

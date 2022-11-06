@@ -206,6 +206,7 @@ unsigned init_gl(
     
     /*Get the uniforms*/
     res->uniform_time=glGetUniformLocation(res->shader_program, "time");
+    res->uniform_frame=glGetUniformLocation(res->shader_program, "frame");
     res->uniform_mouse=glGetUniformLocation(res->shader_program, "mouse");
     res->uniform_mouse_pressed=glGetUniformLocation(res->shader_program, "mouse_pressed");
     res->uniform_res=glGetUniformLocation(res->shader_program, "res");

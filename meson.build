@@ -15,7 +15,7 @@ m_dep = cc.find_library('m', required : false)
 sdl2_dep = dependency('sdl2')
 glew_dep = dependency('glew')
 
-incdir = include_directories(['src', 'extern'])
+incdir = include_directories(['src'])
 
 deps = [
   m_dep,

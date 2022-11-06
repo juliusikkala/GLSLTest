@@ -48,7 +48,7 @@ unsigned init(int argc, char **argv, struct sdl_res *sdl, struct gl_res *gl)
     p.fullscreen=0;
     p.vsync=0;
     p.version_major=4;
-    p.version_minor=3;
+    p.version_minor=6;
     
     /*Parse input*/
     if(parse_input(argv, argc, &p))
@@ -122,6 +122,7 @@ int main(int argc, char **argv)
     unsigned quit=0;
     unsigned begin_ticks;
     unsigned frames=0;
+    unsigned frame_index=0;
     unsigned measure_ticks;
     
     if(init(argc, argv, &sdl, &gl))
@@ -165,6 +166,7 @@ int main(int argc, char **argv)
             }
         }
         frames++;
+        frame_index++;
         if(SDL_GetTicks()-measure_ticks>FPS_MEASURE_PERIOD*1000)
         {
             printf("%d frames in %.1f seconds =  %.3f FPS\n",
@@ -176,6 +178,7 @@ int main(int argc, char **argv)
             measure_ticks=SDL_GetTicks();
         }
         glUniform1f(gl.uniform_time, (SDL_GetTicks()-begin_ticks)/1000.0f);
+        glUniform1i(gl.uniform_frame, frame_index);
         render(&gl);
         SDL_GL_SwapWindow(sdl.win);
     }

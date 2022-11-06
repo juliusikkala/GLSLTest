@@ -40,6 +40,10 @@
         /*! \brief The uniform location of \p time in the shader. A float in seconds.
          */
         GLint uniform_time;
+        /*! \brief The uniform location of \p frame in the shader. An int
+         * representing the frame index.
+         */
+        GLint uniform_frame;
         /*! \brief The uniform location of \p mouse in the shader. A vec2 containing
          *  the screen coordinates of the mouse.
          */
@@ -52,6 +56,7 @@
          *  the screen resolution.
          */
         GLint uniform_res;
+
         /*! \brief The random texture uniform. A sampler2D containing an RGB
          *  random texture.
          */
